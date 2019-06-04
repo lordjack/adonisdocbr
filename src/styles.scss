@@ -1,1 +1,56 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~highlight.js/styles/darkula.css';
+
+@import "style_scss/uikit/variables-theme.scss";
+@import "style_scss/uikit/mixins-theme.scss";
+@import "style_scss/uikit/uikit-theme.scss";
+
+pre {
+    border: none !important;
+    background: none !important;
+    padding: 0;
+}
+
+code {
+    padding: 2px !important;
+    background: #2b2b2b !important;
+    border-radius: 4px !important;
+}
+
+html, 
+body,
+.general {
+    background: #404041 !important;
+    height: 100%;
+}
+
+.content {
+    width: 95%;
+    max-width: 1100px;
+    margin: 2em auto;
+    color: #ccc;
+
+    h1, h2, h3, h4, h5, h6 {
+        color: #ccc;
+    }
+
+    a {
+        color: lighten(#D33C43, 10);
+    }
+
+    blockquote {
+        border-left: 4px solid #D33C43; 
+        padding-left: 1em;
+        font-size: 0.8em;
+        color: #ccc;
+    }
+
+    .navigation-title {
+        display: flex;
+        align-items: center;
+
+        h2{
+            margin: 0;
+        }
+    }
+}
