@@ -2,10 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { HighlightModule } from 'ngx-highlightjs';
-import php from 'highlight.js/lib/languages/php.js';
+import javascript from 'highlight.js/lib/languages/javascript.js';
 export function hljsLanguages() {
   return [
-    {name: 'php', func: php}
+    {name: 'js', func: javascript}
   ];
 }
 import {HighlightResult } from 'ngx-highlightjs';

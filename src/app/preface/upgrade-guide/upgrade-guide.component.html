@@ -1,3 +1,167 @@
 <p>
-  upgrade-guide works!
+  A versão 4.1 contém uma série de correções de bugs e 
+  melhorias na API para manter a base de código simples e menos mágica. 
+  Mudanças recentes foram reduzidas ao mínimo, mas não puderam ser 
+  totalmente eliminadas.
+</p>
+
+
+<h3>Começando</h3>
+<p>
+  O primeiro passo é atualizar todas as dependências.
+</p>
+<p>
+  Usamos o <a href="https://www.npmjs.com/package/npm-check" target="_blank" rel="noopener noreferrer">npm-check</a> para extrair as versões mais recentes dos pacotes:
+</p>
+<pre><code [highlight]="code"></code></pre>
+<p>
+  Execute o seguinte comando para atualizar as dependências interativamente:
+</p>
+<pre><code [highlight]="code1"></code></pre>
+
+
+<h3>Manipulação de exceção</h3>
+<p>
+  Uma das mudanças mais significativas foi no manipulador de exceções globais.
+</p>
+<blockquote>
+  Se você nunca criou o manipulador de exceções globais, sinta-se à vontade para ignorar esta seção.
+</blockquote>
+<p>
+  Faça as seguintes alterações no arquivo <code>app/Exceptions/Handler.js</code>.
+</p>
+<ol>
+  <li>
+    Assegure-se de que seu manipulador de exceções estenda o BaseExceptionHandler:
+    <pre><code [highlight]="code2"></code></pre>
+  </li>
+  <li>
+    Chame <code>super.handle</code> para exceções que você não deseja manipular:
+    <pre><code [highlight]="code3"></code></pre>
+  </li>
+  <li>
+    Por fim, você pode remover as chamadas <code>Exception.bind</code> de sua base de código, 
+    já que todas as exceções serão roteadas para o manipulador de exceções globais.
+  </li>
+</ol>
+
+
+<h3>Routing</h3>
+<h4>Route.url</h4>
+<p>
+  <code>Route.url</code> gera uma URL totalmente qualificada para uma rota pré-registrada.
+</p>
+<p>
+  Anteriormente, o domínio era transmitido como uma string literal.
+</p>
+<p>
+  domínio agora é aceito como um objeto.
+</p>
+<p>Anteriormente</p>
+<pre><code [highlight]="code4"></code></pre>
+
+<p>Agora</p>
+<pre><code [highlight]="code5"></code></pre>
+
+
+<h3>Validator</h3>
+<p>
+  O provedor do validador agora usa a versão mais recente 
+  do <a href="https://indicative.adonisjs.com/" target="_blank" rel="noopener noreferrer">Indicative</a>, 
+  causando as seguintes alterações de quebra.
+</p>
+<h4>formatters</h4>
+<p>
+  O conceito de formatadores nomeados não existe mais.
+</p>
+<p>
+  Se você quiser usar um formatador pré-existente, em
+  vez de passar pelo nome, você deve agora passar por referência.
+</p>
+<p>Anteriormente:</p>
+<pre><code [highlight]="code6"></code></pre>
+<p>Agora:</p>
+<pre><code [highlight]="code7"></code></pre>
+<p>
+  O mesmo se aplica aos validadores de rota também.
+</p>
+<p>Anteriormente:</p>
+<pre><code [highlight]="code8"></code></pre>
+<p>Agora:</p>
+<pre><code [highlight]="code9"></code></pre>
+
+<h4>configure</h4>
+<p>
+  A nova versão do Indicative expõe o método <a href="http://indicative.adonisjs.com/docs/api/configure" target="_blank" rel="noopener noreferrer">configure</a> 
+  para definir padrões de toda a biblioteca:
+</p>
+<pre><code [highlight]="code10"></code></pre>
+
+
+<h3>Views</h3>
+<h4>css</h4>
+<p>
+  O <code>css</code> global foi alterado para <code>style</code>. O <code>css</code> global não é mais suportado
+</p>
+<p>Antes:</p>
+<pre><code [highlight]="code11"></code></pre>
+<p>Agora:</p>
+<pre><code [highlight]="code12"></code></pre>
+
+
+<h3>Lucid</h3>
+<p>
+  Anteriormente, a formatação de datas era inconsistente com 
+  registros recém-criados e registros existentes.
+</p>
+<p>
+  Isso foi corrigido na versão mais recente com uma pequena 
+  alteração (certifique-se de ler o <a href="https://github.com/adonisjs/adonis-lucid/issues/245" target="_blank" rel="noopener noreferrer">problema</a> relacionado).
+</p>
+
+<h4>dates</h4>
+<p>
+  Os campos de data não são mais convertidos para instâncias de <code>moment</code> na instância do modelo.
+</p>
+<p>Anteriormente:</p>
+<pre><code [highlight]="code13"></code></pre>
+<p>Agora:</p>
+<pre><code [highlight]="code14"></code></pre>
+<p>
+  Essa alteração impede que você altere a data na instância do modelo diretamente 
+  e, em vez disso, use o gancho <code>castDates</code> para alterar a 
+  data em que você serializa as propriedades do modelo.
+</p>
+<p>
+  O gancho <code>castDates</code> funciona como anteriormente:
+</p>
+<pre><code [highlight]="code15"></code></pre>
+
+
+<h3>Goodies</h3>
+<p>
+  Várias correções de bugs foram aplicadas para manter a base de código confiável.
+</p>
+<p>
+  Além disso, um punhado de melhorias de desempenho foi implementado.
+</p>
+
+<h4>Validator</h4>
+<p>
+  O Indicative é reescrito a partir do zero, a nova versão é 2x mais rápida do que era anteriormente.
+</p>
+
+<h4>Middleware</h4>
+<p>
+  O middleware agora é resolvido pela camada de análise de middleware no momento da inicialização do aplicativo, 
+  instanciando uma nova instância deles para cada solicitação (anteriormente, o processo de <b>resolve</b>
+  era usado para cada solicitação).
+</p>
+
+<h4>Melhores erros</h4>
+<p>
+  Erros agora aparecerão bem formatados no seu terminal, como mostrado abaixo:
+</p>
+<p>
+  <img class="image1" src="assets/DTHfXErU8AADIyQ.png" alt="">
 </p>
