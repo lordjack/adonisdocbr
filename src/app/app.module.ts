@@ -15,13 +15,17 @@ import { AppComponent } from './app.component';
 import { AboutComponent } from './preface/about/about.component';
 import { UpgradeGuideComponent } from './preface/upgrade-guide/upgrade-guide.component';
 import { ContributionGuideComponent } from './preface/contribution-guide/contribution-guide.component';
+import { SummaryComponent } from './summary/summary.component';
+import { InstallationComponent } from './getting-started/installation/installation.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AboutComponent,
     UpgradeGuideComponent,
-    ContributionGuideComponent
+    ContributionGuideComponent,
+    SummaryComponent,
+    InstallationComponent
   ],
   imports: [
     BrowserModule,

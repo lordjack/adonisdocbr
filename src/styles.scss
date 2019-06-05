@@ -20,29 +20,30 @@ code {
 html, 
 body,
 .general {
-    background: #404041 !important;
     height: 100%;
 }
 
+
+
 .content {
     width: 95%;
-    max-width: 1100px;
+    max-width: 900px;
     margin: 2em auto;
-    color: #ccc;
+    color: #454F5B;
 
     h1, h2, h3, h4, h5, h6 {
-        color: #ccc;
+        color: #454F5B;
     }
 
     a {
-        color: lighten(#D33C43, 10);
+        color: #fb2f51;
     }
 
     blockquote {
         border-left: 4px solid #D33C43; 
         padding-left: 1em;
         font-size: 0.8em;
-        color: #ccc;
+        color: #454F5B;
     }
 
     .navigation-title {
