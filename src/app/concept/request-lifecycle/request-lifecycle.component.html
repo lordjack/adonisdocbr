@@ -1,0 +1,53 @@
+<h3>Introdução</h3>
+<p>
+  A plataforma Node.js é assíncrona. Para iniciantes, pode ser difícil entender como funciona e 
+  como lidar com a abordagem sem bloqueio do fluxo de aplicativos.
+</p>
+<p>
+  Também pode ser confuso diferenciar o JavaScript que você escreve para o front-end 
+  do JavaScript que você escreve para o seu back-end. Eles são os mesmos em termos de sintaxe, 
+  mas não são executados no mesmo tempo de execução e contexto.
+</p>
+<p>
+  Ter uma excelente visão geral de alto nível do ciclo de vida da solicitação é imprescindível. 
+  Você sentirá o AdonisJs menos “mágico” e você ficará mais confiante em construir seus aplicativos.
+</p>
+
+<h3>Fluxo de requisição</h3>
+<p>
+  As solicitações HTTP enviadas de um cliente são tratadas pelo módulo <code>Server </code> do AdonisJs, 
+  executando todo o middleware no nível do servidor (por exemplo, o <code>StaticFileMiddleware</code> que 
+  serve arquivos estáticos do diretório público).
+</p>
+<p>
+  Se a solicitação não for finalizada pelo middleware no nível do servidor, o 
+  AdonisJs <code>Route</code> entra em cena. Ele tenta encontrar uma rota que corresponda 
+  ao URL solicitado. Se o roteador não puder encontrar uma correspondência, 
+  uma exceção <code>RouteNotFound</code> será lançada.
+</p>
+<p>
+  Depois de encontrar uma rota correspondente, todos os middlewares globais são executados, 
+  seguidos por qualquer middleware nomeado definido para a rota especificada. Se nenhum 
+  middleware global ou nomeado encerrar a solicitação, o manipulador de rota definido será chamado.
+</p>
+<p>
+  Você deve encerrar a solicitação no seu manipulador de rota. Uma vez terminado, o 
+  AdonisJs executa todo o middleware downstream e envia a resposta de volta ao cliente.
+</p>
+
+
+<h3>Contexto HTTP</h3>
+<p>
+  O AdonisJs fornece um objeto de contexto HTTP para cada manipulador de rota.
+</p>
+<p>
+  Esse objeto contém tudo o que você precisa para manipular a solicitação, 
+  como a classe de solicitação ou resposta, e pode ser facilmente estendido via 
+  <a routerLink="/concept/service-providers">Provedores</a> ou 
+  <a routerLink="/basic/middleware">Middleware</a>:
+</p>
+<pre><code [highlight]="code"></code></pre>
+<p>
+  Como alternativa, você pode usá-lo diretamente em vez de descompactá-lo:
+</p>
+<pre><code [highlight]="code1"></code></pre>

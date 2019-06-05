@@ -1,0 +1,250 @@
+<h3>Introdução</h3>
+<p>
+  Antes de entender o uso e os benefícios do contêiner de Inversão de Controle (IoC), 
+  precisamos dar um passo atrás e entender os problemas de gerenciamento de dependência 
+  enfrentados pelas grandes bases de código.
+</p>
+
+<h4>Abstrações inúteis</h4>
+<p>
+  Muitas vezes você se depara com uma situação em que precisa criar abstrações 
+  inúteis para uma biblioteca gerenciar seu ciclo de vida.
+</p>
+<p>
+  Por exemplo, para garantir que o banco de dados seja conectado apenas uma vez, 
+  você pode mover todo o código de configuração do banco de dados para seu próprio 
+  arquivo (por exemplo, <code>lib/database.js</code>) e, em seguida, exigir em qualquer lugar dentro de seu aplicativo:
+</p>
+<pre><code [highlight]="code"></code></pre>
+<p>
+  Agora, em vez de exigir knex diretamente, você pode exigir <code>lib/database.js</code> onde for necessário.
+</p>
+<p>
+  Isso é bom para uma única dependência, mas à medida que o aplicativo cresce, 
+  você encontra vários desses arquivos crescendo dentro da sua base de código, o que não é o ideal.
+</p>
+
+<h3>Gestão de dependências</h3>
+<p>
+  Um dos maiores problemas que grandes bases de códigos sofrem é o gerenciamento de dependências.
+</p>
+<p>
+  Como as dependências não se conhecem, o desenvolvedor precisa conectá-las de alguma forma.
+</p>
+<p>
+  Vamos pegar o exemplo de sessões armazenadas em um banco de dados do redis:
+</p>
+<pre><code [highlight]="code1"></code></pre>
+<p>
+  Como você pode ver, a classe <code>Session</code> é dependente da classe <code>Redis</code>, 
+  a classe <code>Redis</code> é dependente da classe <code>Config</code>, e assim por diante.
+</p>
+<p>
+  Ao usar a classe <code>Session</code>, temos que construir suas dependências corretamente:
+</p>
+<pre><code [highlight]="code2"></code></pre>
+<p>
+  Como a lista de dependências pode aumentar com base nos requisitos do projeto, 
+  você pode imaginar rapidamente como esse processo de instanciação sequencial 
+  pode começar a ficar fora de controle!
+</p>
+<p>
+  É aqui que o contêiner IoC é resgatado, assumindo a responsabilidade de resolver suas dependências para você.
+</p>
+
+
+<h3>Teste doloroso</h3>
+<p>
+  Quando não estiver usando um contêiner IoC, você terá que criar maneiras diferentes de 
+  simular dependências ou confiar em bibliotecas como <a href="http://sinonjs.org/" target="_blank" rel="noopener noreferrer">sinonjs</a>.
+</p>
+<p>
+  Ao usar o contêiner IoC, é simples criar falsificações, 
+  pois todas as dependências são resolvidas do contêiner IoC e não diretamente do sistema de arquivos.
+</p>
+
+
+<h3>Dependências de ligação</h3>
+<p>
+  Digamos que queremos vincular a biblioteca Redis ao contêiner IoC, certificando-se de que ela saiba como se compor.
+</p>
+<blockquote>
+  Não há molho secreto para o contêiner IoC. É uma ideia relativamente simples 
+  que controla a composição e a resolução de módulos, abrindo um novo mundo de possibilidades.
+</blockquote>
+<p>
+  O primeiro passo é criar a implementação real do <code>Redis</code> e definir todas as dependências 
+  como parâmetros do <code>constructor</code>:
+</p>
+<pre><code [highlight]="code3"></code></pre>
+<p>
+  Observe que o <code>Config</code> é uma dependência de construtor e não uma instrução <code>require</code> codificada.
+</p>
+<p>
+  Em seguida, vinculemos nossa classe Redis ao contêiner IoC como <code>My/Redis</code>
+</p>
+<pre><code [highlight]="code4"></code></pre>
+<p>
+  Podemos então usar nossa ligação <code>My/Redis</code> assim:
+</p>
+<pre><code [highlight]="code5"></code></pre>
+<ol>
+  <li>
+    O método <code>ioc.bind</code> usa dois parâmetros:
+    <ul>
+      <li>
+        O nome da ligação (por exemplo, <code>My/Redis</code>)
+      </li>
+      <li>
+        Uma função de fábrica executada toda vez que você acessa a ligação, retornando o valor final para a ligação
+      </li>
+    </ul>
+  </li>
+  <li>
+    Como estamos usando o contêiner IoC, extraímos as ligações existentes 
+    (por exemplo, <code>Config</code>) e as passamos para a classe <code>Redis</code>.
+  </li>
+  <li>
+    Finalmente, retornamos uma nova instância do <code>Redis</code>, configurada e pronta para uso.
+  </li>
+</ol>
+
+
+<h3>Singletons</h3>
+<p>
+  Há um problema com a ligação <code>My/Redis</code> que acabamos de criar.
+</p>
+<p>
+  Cada vez que o buscamos no contêiner IoC, ele retorna uma nova instância Redis, 
+  criando uma nova conexão com o servidor Redis.
+</p>
+<p>
+  Para superar esse problema, o contêiner IoC permite que você defina singletons:
+</p>
+<pre><code [highlight]="code6"></code></pre>
+<p>
+  Em vez de usar <code>ioc.bind</code>, usamos <code>ioc.singleton</code>, que armazena em cache seu primeiro 
+  valor de retorno e o reutiliza para retornos futuros.
+</p>
+
+
+<h3>Resolvendo Dependências</h3>
+<p>
+  Simplesmente chame o método <code>ioc.use</code> e dê a ele um namespace para resolver:
+</p>
+<pre><code [highlight]="code7"></code></pre>
+<p>
+  O método de uso global também pode ser usado:
+</p>
+<pre><code [highlight]="code8"></code></pre>
+<p>
+  As etapas executadas ao resolver uma dependência do contêiner IoC são:
+</p>
+<ol>
+  <li>
+    Procure por um registro fake.
+  </li>
+  <li>
+    Em seguida, encontre a ligação real.
+  </li>
+  <li>
+    Procure um alias e, se encontrado, repita o processo usando o nome real da ligação.
+  </li>
+  <li>
+    Resolva como um caminho 'autoloaded'.
+  </li>
+  <li>
+    Retorno ao método <code>require</code> nativo do Node.js.
+  </li>
+</ol>
+
+
+<h3>Aliases</h3>
+<p>
+  Como as ligações de contêiner do IoC devem ser exclusivas, 
+  usamos o seguinte padrão para vincular nomes: <code>Project/Scope/Module</code>.
+</p>
+<p>
+  Quebrando isso, usaremos o <code>Adonis/Src/Config</code> como exemplo:
+</p>
+<ul>
+  <li>
+    <code>Adonis</code> é o nome do projeto (pode ser o nome da sua empresa)
+  </li>
+  <li>
+    <code>Src</code> é o escopo, já que essa ligação é parte do núcleo 
+    (para pacotes de primeiro uso, usamos a palavra-chave <code>Addon</code>)
+  </li>
+  <li>
+    <code>Config</code> é o nome real do módulo
+  </li>
+</ul>
+<p>
+  Como às vezes é difícil lembrar e digitar namespaces completos, 
+  o contêiner IoC permite que você defina aliases para eles.
+</p>
+<p>
+  Os aliases são definidos dentro do objeto de aliases do arquivo <code>start/app.js</code>.
+</p>
+<blockquote>
+  AdonisJs pré-registra aliases para módulos embutidos como <code>Route</code>, <code>View</code>, 
+  <code>Model</code> e assim por diante. No entanto, você sempre pode substituí-los conforme mostrado abaixo.
+</blockquote>
+
+
+<h3>Autoloading</h3>
+<p>
+  Em vez de apenas vincular dependências ao contêiner IoC, 
+  você também pode definir um diretório para ser carregado automaticamente pelo contêiner IoC.
+</p>
+<p>
+  Não se preocupe, ele não carrega todos os arquivos do diretório, mas considera os 
+  caminhos de diretório como parte do processo de resolução de dependência.
+</p>
+<p>
+  Por exemplo, o diretório de aplicativos do AdonisJs é carregado automaticamente 
+  no namespace do aplicativo, o que significa que você pode exigir todos os arquivos 
+  do diretório do aplicativo sem digitar os caminhos relativos.
+</p>
+<p>
+  Por exemplo:
+</p>
+<pre><code [highlight]="code11"></code></pre>
+<p>
+  Pode ser requerido como:
+</p>
+<pre><code [highlight]="code12"></code></pre>
+<p>
+  Sem o autloading, ele teria que ser exigido conforme <code>require('../../Services/Foo')</code>.
+</p>
+<p>
+  Portanto, pense no carregamento automático como uma maneira mais legível e consistente de exigir arquivos.
+</p>
+<p>
+  Além disso, você pode definir facilmente fakes para eles também.
+</p>
+
+
+<h3>FAQ’s</h3>
+<ol>
+  <li>  
+    <h5><b>Eu tenho que ligar tudo dentro do contêiner IoC?</b></h5>
+    Não. As ligações de contêineres do IoC só devem ser usadas quando você quiser abstrair a configuração de uma 
+    biblioteca/módulo com suas próprias coisas. Além disso, considere o uso de provedores de serviços quando você 
+    quiser distribuir dependências e desejar que elas sejam compatíveis com o ecossistema do AdonisJs.
+    <br>
+    <br>
+  </li>
+  <li>
+    <h5><b>Como faço para simular ligações?</b></h5>
+    Não há necessidade de falsificar ligações, pois o AdonisJs permite que você implemente falsificações. 
+    Saiba mais sobre falsificações 
+    <a href="https://adonisjs.com/docs/4.1/testing-fakes" target="_blank" rel="noopener noreferrer">aqui</a>.
+    <br>
+    <br>
+  </li>
+  <li>
+    <h5><b>Como eu envolvo um módulo npm como provedor de serviços?</b></h5>
+    <a routerLink="/concept/service-providers">Aqui</a> está o guia completo para isso.
+  </li>
+</ol>

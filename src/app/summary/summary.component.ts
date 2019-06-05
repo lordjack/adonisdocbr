@@ -8,10 +8,12 @@ import { SummaryService } from '../summary.service';
 })
 export class SummaryComponent implements OnInit {
 
-  list: any[]
+  preface: any[]
+  concept: any[]
 
   constructor(public summary: SummaryService) {
-    this.list = summary.preface
+    this.preface = summary.getPreface()
+    this.concept = summary.getConcept()
   }
 
   ngOnInit() {

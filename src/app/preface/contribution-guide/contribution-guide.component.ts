@@ -7,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ContributionGuideComponent implements OnInit {
 
+  code = `
+  npm run lint
+  `
   constructor() { }
 
   ngOnInit() {

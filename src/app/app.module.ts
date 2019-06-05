@@ -17,6 +17,10 @@ import { UpgradeGuideComponent } from './preface/upgrade-guide/upgrade-guide.com
 import { ContributionGuideComponent } from './preface/contribution-guide/contribution-guide.component';
 import { SummaryComponent } from './summary/summary.component';
 import { InstallationComponent } from './getting-started/installation/installation.component';
+import { RequestLifecycleComponent } from './concept/request-lifecycle/request-lifecycle.component';
+import { IocContainerComponent } from './concept/ioc-container/ioc-container.component';
+import { ServiceProvidersComponent } from './concept/service-providers/service-providers.component';
+import { IgnitorComponent } from './concept/ignitor/ignitor.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +29,11 @@ import { InstallationComponent } from './getting-started/installation/installati
     UpgradeGuideComponent,
     ContributionGuideComponent,
     SummaryComponent,
-    InstallationComponent
+    InstallationComponent,
+    RequestLifecycleComponent,
+    IocContainerComponent,
+    ServiceProvidersComponent,
+    IgnitorComponent
   ],
   imports: [
     BrowserModule,
