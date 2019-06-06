@@ -1,0 +1,256 @@
+<p>
+  O provedor de autenticação AdonisJs é um sistema completo para 
+  autenticar solicitações HTTP usando vários autenticadores.
+</p>
+<p>
+  Usando autenticadores, você pode criar sistemas tradicionais de login baseados em sessão e proteger suas APIs.
+</p>
+<blockquote>
+  Para opinar sobre o gerenciamento de perfis de usuários, confira o 
+  pacote oficial do <a href="https://github.com/adonisjs/adonis-persona" target="_blank" rel="noopener noreferrer">Adonis Persona</a> 
+  - um serviço simples e funcional 
+  para permitir que você crie, verifique e atualize perfis de usuários no AdonisJs.
+</blockquote>
+
+<h3>Autenticadores</h3>
+<p>
+  Cada autenticador é uma combinação de esquema de autenticação e serializador.
+</p>
+<h4>Schemes</h4>
+<ul>
+  <li>Session (session)</li>
+  <li>Basic Auth (basic)</li>
+  <li>JWT (jwt)</li>
+  <li>Personal API Tokens (api)</li>
+</ul>
+
+<h4>Serializers</h4>
+<ul>
+  <li>Lucid (lucid)</li>
+  <li>Database (database)</li>
+</ul>
+
+
+<h3>Categorias de Autenticação</h3>
+<p>
+  A autenticação é dividida em duas grandes categorias: com estado - <i>stateful</i> e sem estado - <i>stateless</i>.
+</p>
+<p>
+  A autenticação baseada em sessão é considerada com estado - <i>stateful</i> - desde que 
+  os usuários conectados possam navegar para diferentes áreas do aplicativo sem reenviar suas credenciais.
+</p>
+<p>
+  A autenticação sem estado - <i>stateless</i> - exige que o usuário reenvie suas credenciais em 
+  cada solicitação HTTP, o que é muito comum nas APIs.
+</p>
+<p>
+  AdonisJs fornece ferramentas e ajudantes necessários para gerenciar os dois 
+  tipos de autenticação com facilidade.
+</p>
+
+
+<h3>Hashing de Senha</h3>
+<p>
+  O provedor de autenticação AdonisJs usa o módulo 
+  <a href="https://adonisjs.com/docs/4.1/encryption-and-hashing#_hashing_values" target="_blank" rel="noopener noreferrer">Hash</a> para verificar as senhas.
+</p>
+<p>
+  Sempre <a href="https://adonisjs.com/docs/4.1/database-hooks#_defining_hooks" target="_blank" rel="noopener noreferrer">faça o hash</a> de suas senhas antes de salvá-las no banco de dados.
+</p>
+
+
+<h3>Setup</h3>
+<p>
+  O provedor de autenticação do AdonisJs vem pré-instalado com os recursos de <code>fullstack</code> e <code>api</code>.
+</p>
+<p>
+  Se o provedor de autenticação ainda não estiver configurado, siga as instruções abaixo.
+</p>
+<p>
+  Primeiro, execute o comando adonis para baixar o provedor de autenticação:
+</p>
+<pre><code [highlight]="code"></code></pre>
+<p>
+  Em seguida, registre o provedor de autenticação dentro do arquivo <code>start/app.js</code>:
+</p>
+<pre><code [highlight]="code1"></code></pre>
+<p>
+  Finalmente, registre o middleware de autenticação dentro do arquivo <code>start/kernel.js</code>:
+</p>
+<pre><code [highlight]="code2"></code></pre>
+
+
+<h3>Config</h3>
+<p>
+  Sua configuração de autenticação é salva dentro do arquivo <code>config/auth.js</code>.
+</p>
+<p>
+  Por padrão, o autenticador <code>session</code> é usado para autenticar solicitações de aplicativos.
+</p>
+
+
+<h3>Exemplo básico</h3>
+<p>
+  Vamos começar com o exemplo de login em um usuário e, em seguida, 
+  apenas mostrando o perfil dele se ele estiver conectado.
+</p>
+<p>
+  Primeiro, adicione as seguintes rotas ao arquivo <code>start/routes.js</code>:
+</p>
+<pre><code [highlight]="code3"></code></pre>
+<p>
+  Em seguida, crie o UserController através do comando adonis:
+</p>
+<pre><code [highlight]="code4"></code></pre>
+<p>
+  Adicione o método de login ao UserController:
+</p>
+<pre><code [highlight]="code5"></code></pre>
+<p>
+  O método <code>login</code> acima extrai o <code>email</code> e a <code>password</code> do usuário da solicitação e 
+  registra-os se suas credenciais forem válidas.
+</p>
+<p>
+  Finalmente, adicione o método <code>show</code> ao <code>UserController</code>:
+</p>
+<pre><code [highlight]="code6"></code></pre>
+<p>
+  O método <code>show</code> acima verifica se o parâmetro <code>id</code> é igual ao ID do usuário atualmente logado. 
+  Em caso afirmativo, o modelo de usuário autenticado é retornado (o que o AdonisJS converte em 
+  JSON na resposta final).
+</p>
+
+
+<h3>Session</h3>
+<h4>Session Config</h4>
+<pre><code [highlight]="code7"></code></pre>
+<br>
+<table class="uk-table">
+  <thead>
+    <tr>
+      <th>Chave</th>
+      <th>Valores</th>
+      <th>Descrição</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>serializer</td>
+      <td>
+        <code>lucid</code>, <code>database</code>
+      </td>
+      <td>Serializador usado para buscar o usuário do banco de dados.</td>
+    </tr>
+    <tr>
+      <td>scheme</td>
+      <td><code>session</code>, <code>basic</code>, <code>jwt</code>, <code>api</code></td>
+      <td>Esquema usado para buscar e autenticar as credenciais do usuário.</td>
+    </tr>
+    <tr>
+      <td>uid</td>
+      <td>Nome do campo do banco de dados</td>
+      <td>Campo do banco de dados usado como o identificador exclusivo de um determinado usuário.</td>
+    </tr>
+    <tr>
+      <td>password</td>
+      <td>Nome do campo do banco de dados</td>
+      <td>Campo usado para verificar a senha do usuário.</td>
+    </tr>
+    <tr>
+      <td>model</td>
+      <td>Namespace do modelo (apenas <code>lucid</code>)</td>
+      <td>Modelo usado para consultar o banco de dados, aplicável somente ao usar o serializador <code>lucid</code>.</td>
+    </tr>
+    <tr>
+      <td>table</td>
+      <td>Nome da tabela de banco de dados (somente <code>database</code>)</td>
+      <td>Aplicável somente ao usar o serializador de <code>database</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h4>Métodos de Sessão</h4>
+<p>
+  O autenticador de sessão expõe os seguintes métodos para efetuar login e autenticar usuários.
+</p>
+
+<h5>attempt(uid, password)</h5>
+<p>
+  Login via <code>uid</code> e <code>password</code>, lançando uma exceção se nenhum usuário for encontrado ou a senha for inválida:
+</p>
+<pre><code [highlight]="code8"></code></pre>
+
+<h5>login(user)</h5>
+<p>
+  Login por meio da instância do modelo <code>user</code>, não verifique nada, apenas marque o usuário como logado:
+</p>
+<pre><code [highlight]="code9"></code></pre>
+
+<h5>loginViaId(id)</h5>
+<p>
+  Login via user id, consultando o banco de dados para garantir que o usuário existe:
+</p>
+<pre><code [highlight]="code10"></code></pre>
+
+<h5>remember</h5>
+<p>
+  Ao chamar métodos como <code>attempt</code>, <code>login</code> ou <code>loginViaId</code>, 
+  encadeie o método <code>remember</code> para garantir que os usuários permaneçam conectados 
+  depois de fechar o navegador:
+</p>
+<pre><code [highlight]="code11"></code></pre>
+
+<blockquote>
+  O método <code>remember</code> cria um token para o usuário dentro da tabela de tokens. 
+  Se você quiser revogar a sessão de longa duração de um usuário específico, 
+  basta definir <code>is_revoked</code> como true.
+</blockquote>
+
+<h5>check</h5>
+<p>
+  Verifique se um usuário já está logado lendo sua sessão:
+</p>
+<pre><code [highlight]="code12"></code></pre>
+
+<h5>getUser</h5>
+<p>
+  Retorna a instância do usuário logado (através do método <code>check</code>):
+</p>
+<pre><code [highlight]="code13"></code></pre>
+
+<h5>logout</h5>
+<p>
+  Efetue logout do usuário conectado no momento:
+</p>
+<pre><code [highlight]="code14"></code></pre>
+
+
+<h3>Autenticação básica</h3>
+<p>
+  Como a autenticação básica é stateless com usuários passando credenciais por 
+  solicitação, não há nenhum conceito de login e logout.
+</p>
+<blockquote>
+  O cabeçalho <code>Authorization = Basic credentials</code> deve ser configurado 
+  para autenticar as solicitações de autenticação básicas, em que <code>credentials</code> 
+  é uma string codificada em <code>base64</code> de <code>uid:password</code>, 
+  em que <code>uid</code> é o campo do banco de dados <code>uid</code> definido 
+  no arquivo <code>config/auth.js</code>.
+</blockquote>
+
+<h4>Métodos de Autenticação Básica</h4>
+<p>
+  O autenticador básico expõe os seguintes métodos para autenticar usuários.
+</p>
+
+<h5>check</h5>
+<p>
+  Verifique as credenciais básicas de autenticação do usuário no cabeçalho da 
+  solicitação, confirmando a existência do usuário e validando a senha:
+</p>
+<pre><code [highlight]="code15"></code></pre>
+
+<h5>getUser</h5>
+<p>Retorna a instância do usuário logado (através do método <code>check</code> ):</p>
+<pre><code [highlight]="code16"></code></pre>

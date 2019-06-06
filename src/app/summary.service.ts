@@ -17,6 +17,15 @@ export class SummaryService {
     {url: 'concept/service-providers', title: "Service Providers"},
     {url: 'concept/ignitor', title: "Ignitor"},
   ]
+  
+  security = [
+    {url: 'security/security-introduction', title: "Introdução"},
+    {url: 'security/authentication', title: "Autenticação"},
+    {url: 'security/cors', title: "CORS"},
+    {url: 'security/csrf', title: "CSRF"},
+    {url: 'security/encryption-and-hashing', title: "Encriptação e Hashing"},
+    {url: 'security/shield', title: "Middleware de proteção"},
+  ]
 
   constructor() { }
 
@@ -26,5 +35,9 @@ export class SummaryService {
 
   getConcept(){
     return this.concept
+  }
+
+  getSecurity(){
+    return this.security
   }
 }

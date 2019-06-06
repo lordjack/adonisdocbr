@@ -21,6 +21,12 @@ import { RequestLifecycleComponent } from './concept/request-lifecycle/request-l
 import { IocContainerComponent } from './concept/ioc-container/ioc-container.component';
 import { ServiceProvidersComponent } from './concept/service-providers/service-providers.component';
 import { IgnitorComponent } from './concept/ignitor/ignitor.component';
+import { SecurityIntroductionComponent } from './security/security-introduction/security-introduction.component';
+import { AuthenticationComponent } from './security/authentication/authentication.component';
+import { CorsComponent } from './security/cors/cors.component';
+import { CsrfComponent } from './security/csrf/csrf.component';
+import { EncryptionAndHashingComponent } from './security/encryption-and-hashing/encryption-and-hashing.component';
+import { ShieldComponent } from './security/shield/shield.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +39,13 @@ import { IgnitorComponent } from './concept/ignitor/ignitor.component';
     RequestLifecycleComponent,
     IocContainerComponent,
     ServiceProvidersComponent,
-    IgnitorComponent
+    IgnitorComponent,
+    SecurityIntroductionComponent,
+    AuthenticationComponent,
+    CorsComponent,
+    CsrfComponent,
+    EncryptionAndHashingComponent,
+    ShieldComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,113 @@
+<p>
+  AdonisJs fornece um punhado de ferramentas para manter seus sites seguros contra ataques comuns na web.
+</p>
+<p>
+  Neste guia, aprendemos sobre as melhores práticas para manter seus aplicativos AdonisJs seguros.
+</p>
+
+<blockquote>
+  Se você descobrir algum erro de segurança, por favor nos informe imediatamente via <a href="mailto:virk@adonisjs.com">e-mail</a>. 
+  Não crie problemas no GitHub, pois isso pode afetar os aplicativos em execução na produção. 
+  Os problemas encontrados serão divulgados assim que os patches forem enviados para a base de código.
+</blockquote>
+
+<h3>Segurança da Sessão</h3>
+<p>
+  Sessões podem vazar informações importantes se não forem manuseadas com cuidado.
+</p>
+<p>
+  O AdonisJs criptografa e assina todos os cookies usando o <code>appKey</code> definido no arquivo <code>config/app.js</code>.
+</p>
+<p>
+  Mantenha em segredo o <code>appKey</code> - compartilhe com ninguém e nunca o insira em 
+  sistemas de controle de versão como o Github.
+</p>
+
+<h4>Session Config</h4>
+<p>  
+  A configuração da sessão é salva dentro do arquivo <code>config/session.js</code>.
+</p>
+<p>
+  Ao atualizar sua configuração de sessão, considere as seguintes sugestões:
+</p>
+<ul>
+  <li>
+    O valor <code>httpOnly</code> deve ser definido como <code>true</code>, já que defini-lo como <code>false</code> 
+    tornará seus cookies acessíveis via JavaScript usando document.cookie.
+  </li>
+  <li>
+    O valor <code>sameSite</code> também deve ser definido como <code>true</code>, 
+    garantindo que seu cookie de sessão não esteja visível/acessível por meio de domínios diferentes.
+  </li>
+</ul>
+
+
+<h3>Falsificação de métodos de formulário</h3>
+<p>
+  Como os formulários HTML só são capazes de fazer solicitações <code>GET</code> e <code>POST</code>, 
+  você não pode usar verbos HTTP como <code>PUT</code> ou <code>DELETE</code> para realizar operações com 
+  recursos por meio do atributo de método de um formulário.
+</p>
+<p>
+  Para contornar esse problema, o AdonisJs implementa a falsificação de métodos de formulário, 
+  permitindo que você envie o método HTTP pretendido por meio do parâmetro de string de consulta 
+  <code>_method</code> da URL de solicitação:
+</p>
+<pre><code [highlight]="code"></code></pre>
+<pre><code [highlight]="code1"></code></pre>
+<p>
+  No exemplo acima, é acrescentado <code>?_method=PUT</code> ao URL de ação do formulário, 
+  isso converte o método HTTP de solicitação de POST para PUT.
+</p>
+<p>
+  Aqui estão algumas coisas que você deve saber sobre spoofing de método:
+</p>
+<ul>
+  <li>
+    O AdonisJs apenas falsifica métodos em que o método HTTP de origem é <code>POST</code>, 
+    o que significa que as solicitações <code>GET</code> que passam um <code>_method</code> 
+    HTTP intencional não são falsificadas.
+  </li>
+  <li>
+    A falsificação de métodos pode ser desativada configurando <code>allowMethodSpoofing</code> 
+    como <code>false</code> dentro do arquivo <code>config/app.js</code>:
+  </li>
+</ul>
+<pre><code [highlight]="code2"></code></pre>
+
+
+<h3>Upload de arquivos</h3>
+<p>
+  Os invasores geralmente tentam fazer upload de arquivos maliciosos aos servidores para depois 
+  executarem e obter acesso, afim de executar algum tipo de atividade destrutiva.
+</p>
+<p>
+  Além de fazer upload de arquivos maliciosos, os invasores também podem tentar 
+  enviar arquivos enormes para que o servidor continue ocupado fazendo o upload e 
+  começando a gerar erros de TIMEOUT para solicitações subsequentes.
+</p>
+<p>
+  Para combater esse cenário, o AdonisJs permite que você defina o tamanho máximo de 
+  upload processável pelo seu servidor. Isso significa que qualquer arquivo maior 
+  que o especificado em <code>maxSize</code> é negado, mantendo seu servidor em um estado íntegro.
+</p>
+<p>
+  Defina seu valor <code>maxSize</code> dentro do arquivo <code>config/bodyParser.js</code>:
+</p>
+<pre><code [highlight]="code3"></code></pre>
+<p>
+  Veja algumas dicas a serem consideradas ao lidar com uploads de arquivos:
+</p>
+<p>
+  Renomeie os arquivos do usuário antes de fazer o upload/armazenamento.
+</p>
+<p>
+  Não armazene arquivos enviados dentro do diretório público, pois os arquivos públicos podem ser acessados diretamente.
+</p>
+<p>
+  Não compartilhe a localização real dos arquivos enviados com seus usuários. Em vez disso, 
+  considere salvar uma referência aos caminhos de arquivos carregados em seu banco de dados 
+  (cada arquivo com um ID exclusivo) e configurar uma rota para servir esses arquivos enviados 
+  por meio de id, da seguinte forma:
+</p>
+<pre><code [highlight]="code4"></code></pre>

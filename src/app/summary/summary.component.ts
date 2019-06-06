@@ -10,10 +10,13 @@ export class SummaryComponent implements OnInit {
 
   preface: any[]
   concept: any[]
+  security: any[]
 
   constructor(public summary: SummaryService) {
+
     this.preface = summary.getPreface()
     this.concept = summary.getConcept()
+    this.security = summary.getSecurity()
   }
 
   ngOnInit() {
