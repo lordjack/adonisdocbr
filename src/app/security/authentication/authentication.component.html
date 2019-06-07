@@ -254,3 +254,140 @@
 <h5>getUser</h5>
 <p>Retorna a instância do usuário logado (através do método <code>check</code> ):</p>
 <pre><code [highlight]="code16"></code></pre>
+
+
+<h3>JWT</h3>
+<p>
+  A autenticação <a href="https://jwt.io/" target="_blank" rel="noopener noreferrer">JWT</a> 
+  é um padrão da indústria para implementar autenticação sem estado por meio de tokens de string.
+</p>
+<p>
+  AdonisJs suporta tokens JWT fora da caixa através do seu autenticador jwt.
+</p>
+<blockquote>
+  O cabeçalho <code>Authorization = Bearer &lt;token&gt;</code> deve ser configurado 
+  para autenticar solicitações jwt, em que o <code>&lt;token&gt;</code> é um token JWT válido.
+</blockquote>
+
+<h4>JWT Config</h4>
+<p>
+  Arquivo de configuração para JWT, em <code>config/auth.js</code>:
+</p>
+<pre><code [highlight]="code17"></code></pre>
+<table class="uk-table">
+  <thead>
+    <tr>
+      <th>Chave</th>
+      <th>Valores</th>
+      <th>Valor padrão</th>
+      <th>Descrição</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>algorithm</td>
+      <td><code>HS256</code>, <code>HS384</code></td>
+      <td><code>HS256</code></td>
+      <td>Algoritmo usado para gerar tokens</td>
+    </tr>
+    <tr>
+      <td>expiresIn</td>
+      <td>Tempo válido em segundos ou <a href="https://github.com/rauchg/ms.js" target="_blank" rel="noopener noreferrer">ms string</a></td>
+      <td>null</td>
+      <td>Quando expira o token</td>
+    </tr>
+    <tr>
+      <td>notBefore</td>
+      <td>Tempo válido em segundos ou <a href="https://github.com/rauchg/ms.js" target="_blank" rel="noopener noreferrer">ms string</a></td>
+      <td>null</td>
+      <td>Tempo mínimo para manter os tokens válidos</td>
+    </tr>
+    <tr>
+      <td>audience</td>
+      <td>String</td>
+      <td>null</td>
+      <td>Requerer <code>aud</code></td>
+    </tr>
+    <tr>
+      <td>issuer</td>
+      <td>Array ou String</td>
+      <td>null</td>
+      <td>Requerer <code>iss</code></td>
+    </tr>
+    <tr>
+      <td>subject</td>
+      <td>String</td>
+      <td>null</td>
+      <td>Requerer <code>sub</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Métodos JWT</h4>
+<p>
+  O autenticador jwt expõe os métodos a seguir para gerar tokens JWT e autenticar usuários.
+</p>
+
+<h5>attempt(uid, password, [jwtPayload], [jwtOptions])</h5>
+<p>
+  Valida as credenciais do usuário e gera um token JWT em troca:
+</p>
+<pre><code [highlight]="code18"></code></pre>
+<p>
+  Saída:
+</p>
+<pre><code [highlight]="code19"></code></pre>
+
+<h5>generate(user, [jwtPayload], [jwtOptions])</h5>
+<p>
+  Gere o token JWT para um determinado usuário:
+</p>
+<pre><code [highlight]="code20"></code></pre>
+<p>
+  Como opção, você pode passar um objeto personalizado para ser codificado no token. 
+  Passar <code>jwtPayload = true</code> codifica o objeto do usuário dentro do token.
+</p>
+
+<h5>withRefreshToken</h5>
+<p>
+  Instrua o autenticador do JWT a gerar um token de atualização também:
+</p>
+<pre><code [highlight]="code21"></code></pre>
+<p>
+  O token de atualização é gerado para que os clientes possam atualizar o 
+  token jwt real sem solicitar as credenciais do usuário novamente.
+</p>
+
+<h5>generateForRefreshToken(refresh_token, [jwtPayload])</h5>
+<p>
+  Gere um novo token JWT usando o token de atualização. Usar a opção <code>jwtPayload = true</code> 
+  codifica o objeto do usuário dentro do token.
+</p>
+<pre><code [highlight]="code22"></code></pre>
+
+<h5>newRefreshToken</h5>
+<p>
+  Ao gerar um novo token jwt, o provedor de autenticação não emitirá um novo token de 
+  atualização, em vez disso, usará o antigo. Se desejar, você também pode gerar um novo token de atualização:
+</p>
+<pre><code [highlight]="code23"></code></pre>
+
+<h5>check</h5>
+<p>
+  Verifica se um token JWT válido foi enviado por meio do cabeçalho <code>Authorization</code>:
+</p>
+<pre><code [highlight]="code24"></code></pre>
+
+<h5>getUser</h5>
+<p>
+  Retorna a instância do usuário logado (através do método <code>check</code>):
+</p>
+<pre><code [highlight]="code25"></code></pre>
+
+<h5>listTokens</h5>
+<p>
+  Lista todos os tokens de atualização do JWT para o usuário:
+</p>
+<pre><code [highlight]="code26"></code></pre>
+
+

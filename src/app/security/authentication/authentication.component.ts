@@ -121,6 +121,70 @@ export class AuthenticationComponent implements OnInit {
     response.send('Credentials missing')
   }
   `
+  code17 = `
+  module.exports = {
+    authenticator: 'jwt',
+    jwt: {
+      serializer: 'Lucid',
+      model: 'App/Model/User',
+      scheme: 'jwt',
+      uid: 'email',
+      password: 'password',
+      options: {
+        secret: Config.get('app.appKey'),
+        // For additional options, see the table below...
+      }
+    }
+  }
+  `
+  code18 = `
+  await auth.attempt(uid, password)
+  `
+  code19 = `
+  {
+    type: 'type',
+    token: '.....',
+    refreshToken: '....'
+  }
+  `
+  code20 = `
+  const user = await User.find(1)
+
+  await auth.generate(user)
+  `
+  code21 = `
+  await auth
+    .withRefreshToken()
+    .attempt(uid, password)
+  `
+  code22 = `
+  const refreshToken = request.input('refresh_token')
+
+  await auth.generateForRefreshToken(refreshToken, true)
+  `
+  code23 = `
+  await auth
+    .newRefreshToken()
+    .generateForRefreshToken(refreshToken)
+  `
+  code24 = `
+  try {
+    await auth.check()
+  } catch (error) {
+    response.send('Missing or invalid jwt token')
+  }
+  `
+  code25 = `
+  try {
+    return await auth.getUser()
+  } catch (error) {
+    response.send('Missing or invalid jwt token')
+  }
+  `
+  code26 = `
+  await auth.listTokens()
+  `
+
 
   constructor() { }
 
