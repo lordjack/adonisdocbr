@@ -391,3 +391,160 @@
 <pre><code [highlight]="code26"></code></pre>
 
 
+<h3>Personal API tokens</h3>
+<p>
+  Os tokens de API pessoal foram tornados 
+  populares pelo <a href="https://github.com/blog/1509-personal-api-tokens" target="_blank" rel="noopener noreferrer">Github</a> para uso em 
+  scripts como um substituto revogável da autenticação tradicional de e-mail e senha.
+</p>
+<p>
+  O AdonisJs permite que você crie aplicativos onde seus usuários podem 
+  criar tokens de API pessoais e usá-los para autenticar
+</p>
+<blockquote>
+  O cabeçalho <code>Authorization = Bearer &lt;token&gt;</code> deve ser 
+  configurado para autenticar solicitações de autenticação de API, em que &lt;token&gt; é um token de API válido.
+</blockquote>
+
+<h4>Métodos de API</h4>
+<p>
+  O autenticador da API expõe os métodos a seguir para gerar tokens de API e autenticar usuários.
+</p>
+
+<h5>attempt(uid, password)</h5>
+<p>
+  Valide as credenciais do usuário e gere um novo token para elas:
+</p>
+<pre><code [highlight]="code27"></code></pre>
+<pre><code [highlight]="code28"></code></pre>
+
+<h5>generate(user)</h5>
+<p>
+  Gerar token para um determinado usuário:
+</p>
+<pre><code [highlight]="code29"></code></pre>
+
+<h5>check</h5>
+<p>
+  Verifica se um token de API válido foi passado pelo cabeçalho de <code>Authorization</code>:
+</p>
+<pre><code [highlight]="code30"></code></pre>
+
+<h5>getUser</h5>
+<p>
+  Retorna a instância do usuário logado (através do método <code>check</code>):
+</p>
+<pre><code [highlight]="code31"></code></pre>
+
+<h5>listTokens</h5>
+<p>
+  Listar todos os tokens da API para o usuário:
+</p>
+<pre><code [highlight]="code32"></code></pre>
+
+
+<h3>Autenticadores de comutação</h3>
+<p>
+  O provedor de autenticação simplifica a alternância entre vários autenticadores 
+  em tempo de execução, chamando o método <code>authenticator</code>.
+</p>
+<p>
+  Supondo que o usuário esteja logado usando o autenticador de <code>session</code>, 
+  podemos gerar um token JWT para eles da seguinte forma:
+</p>
+<pre><code [highlight]="code33"></code></pre>
+
+<h3>Middleware de Autenticação</h3>
+<p>
+  O middleware de autenticação automatiza a autenticação para quaisquer rotas aplicadas.
+</p>
+<p>
+  Está registrado como um middleware nomeado dentro do arquivo <code>start/kernel.js</code>:
+</p>
+<pre><code [highlight]="code34"></code></pre>
+<p>
+  Uso:
+</p>
+<pre><code [highlight]="code35"></code></pre>
+
+
+<h3>Middleware Convidado</h3>
+<p>
+  O middleware <code>guest</code> verifica se o usuário não está autenticado.
+</p>
+<p>
+  Está registrado como um middleware nomeado dentro do arquivo <code>start/kernel.js</code>:
+</p>
+<pre><code [highlight]="code36"></code></pre>
+<p>
+  Uso:
+</p>
+<pre><code [highlight]="code37"></code></pre>
+
+
+<h3>Helpers</h3>
+<p>
+  O provedor de autenticação adiciona alguns auxiliares à instância da exibição 
+  para que você possa gravar o HTML em torno do estado de um usuário que efetuou login.
+</p>
+
+<h5>auth</h5>
+<p>
+  Referência ao objeto auth:
+</p>
+<pre><code [highlight]="code38"></code></pre>
+
+<h5>loggedIn</h5>
+<p>
+  A tag de <code>loggedIn</code> pode ser usada para escrever <code>if/else</code> em torno do usuário conectado:
+</p>
+<pre><code [highlight]="code39"></code></pre>
+
+
+<h3>Revogando Tokens</h3>
+<p>
+  Os esquemas <code>jwt</code> e <code>api</code> expõem métodos para revogar os 
+  tokens usando a interface <code>auth</code>.
+</p>
+<blockquote>
+  Para o <code>jwt</code>, a atualização de tokens são revogados apenas, 
+  pois os tokens reais nunca são salvos no banco de dados.
+</blockquote>
+
+<h4>revokeTokens(tokens, delete = false)</h4>
+<p>
+  O método a seguir revogará os tokens definindo um sinalizador na tabela de tokens:
+</p>
+<pre><code [highlight]="code40"></code></pre>
+<p>
+  Se <code>true</code> for passado como o segundo argumento, em vez de definir o 
+  sinalizador de banco de dados <code>is_revoked</code>, a linha relevante será excluída do banco de dados:
+</p>
+<pre><code [highlight]="code41"></code></pre>
+<p>
+  Para revogar todos os tokens, chame <code>revokeTokens</code> sem nenhum argumento:
+</p>
+<pre><code [highlight]="code42"></code></pre>
+<p>
+  Ao revogar o token da API para o usuário atualmente conectado, 
+  você pode acessar o valor no cabeçalho da solicitação:
+</p>
+<pre><code [highlight]="code43"></code></pre>
+
+<h4>revokeTokensForUser(user, tokens, delete = false)</h4>
+<p>
+  Este método funciona da mesma forma que o método revokeTokens, mas você pode especificar o usuário:
+</p>
+<pre><code [highlight]="code44"></code></pre>
+
+
+<h3>Criptografia de Token</h3>
+<p>
+  Os tokens são salvos em formato simples dentro do banco de dados, 
+  mas são enviados em formato criptografado para o usuário final.
+</p>
+<p>
+  Isso é feito para garantir que, caso alguém acesse seu banco de dados, 
+  ele não poderá usar seus tokens diretamente (eles teriam que descobrir 
+  como criptografá-los usando a chave secreta).
+</p>

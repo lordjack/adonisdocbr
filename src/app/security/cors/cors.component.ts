@@ -7,6 +7,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CorsComponent implements OnInit {
 
+  code = `
+  adonis install @adonisjs/cors
+  `
+
   constructor() { }
 
   ngOnInit() {

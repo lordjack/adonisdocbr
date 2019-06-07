@@ -184,7 +184,110 @@ export class AuthenticationComponent implements OnInit {
   code26 = `
   await auth.listTokens()
   `
+  code27 = `
+  const token = await auth.attempt(uid, password)
+  `
+  code28 = `
+  {
+    type: 'bearer',
+    token: '...'
+  }
+  `
+  code29 = `
+  const user = await User.find(1)
 
+  const token = await auth.generate(user)
+  `
+  code30 = `
+  try {
+    await auth.check()
+  } catch (error) {
+    response.send('Missing or invalid api token')
+  }
+  `
+  code31 = `
+  try {
+    await auth.getUser()
+  } catch (error) {
+    response.send('Missing or invalid api token')
+  }
+  `
+  code32 = `
+  await auth.listTokens()
+  `
+  code33 = `
+  const user = auth.user
+
+  const auth
+    .authenticator('jwt')
+    .generate(user)
+  `
+  code34 = `
+  const namedMiddleware = {
+    auth: 'Adonis/Middleware/Auth'
+  }
+  `
+  code35 = `
+  Route
+    .get('users/profile', 'UserController.profile')
+    .middleware(['auth'])
+  `
+  code36 = `
+  const namedMiddleware = {
+    guest: 'Adonis/Middleware/AllowGuestOnly'
+  }
+  `
+  code37 = `
+  // Não queremos que nosso usuário conectado acesse essa visualização
+  Route
+    .get('login', 'AuthController.login')
+    .middleware(['guest'])
+  `
+  code38 = `
+  Hello {{ auth.user.username }}!
+  `
+  code39 = `
+  @loggedIn
+    <h2> Hello {{ auth.user.username }} </h2>
+  @else
+    <p> Please login </p>
+  @endloggedIn
+  `
+  code40 = `
+  const refreshToken = '' // obtêm do usuário
+
+  await auth
+    .authenticator('jwt')
+    .revokeTokens([refreshToken])
+  `
+  code41 = `
+  const refreshToken = '' // obtêm do usuário
+
+  await auth
+    .authenticator('jwt')
+    .revokeTokens([refreshToken], true)
+  `
+  code42 = `
+  await auth
+    .authenticator('jwt')
+    .revokeTokens()
+  `
+  code43 = `
+  // para usuário atualmente conectado
+
+  const apiToken = auth.getAuthHeader()
+
+  await auth
+    .authenticator('api')
+    .revokeTokens([apiToken])
+  `
+  code44 = `
+  const user = await User.find(1)
+
+  await auth
+    .authenticator('jwt')
+    .revokeTokensForUser(user)
+  `
 
   constructor() { }
 
